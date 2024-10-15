@@ -5,7 +5,7 @@ document.addEventListener("DOMContentLoaded", () => {
  
   const newTaskForm = document.getElementById("create-task-form");
   const newTaskDescription = document.getElementById("new-task-description");
-  const newTaskPriority = document.getElementById("new-task-priority");
+  const newTaskPriority = document.getElementById("task-priority");
 
   const taskUl = document.getElementById("tasks");
 
@@ -13,7 +13,10 @@ document.addEventListener("DOMContentLoaded", () => {
 
   newTaskForm.addEventListener("submit", (e) => {
     e.preventDefault();
-    taskList.createNewTask(newTaskDescription.value);
+    const description = newTaskDescription.value;
+    const priority = newTaskPriority.value;
+
+    taskList.createNewTask(description, priority);
    
     e.target.reset();
     renderApp();
@@ -27,13 +30,14 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 });
 class Task {
-  constructor(description) {
+  constructor(description, priority) {
     this.description = description;
+    this.priority = priority;
   }
 
   render() {
     return `
-      <li>
+      <li style="color: ${setPriorityColor(this.priority)};">
         ${this.description}
         <button data-description="${this.description}">X</button>
       </li>
@@ -45,8 +49,8 @@ class TaskList {
     this.tasks = [];
   }
 
-  createNewTask(description) {
-    const newTask = new Task(description);
+  createNewTask(description, priority) {
+    const newTask = new Task(description, priority);
     this.tasks.push(newTask);
   }
 
@@ -58,3 +62,18 @@ class TaskList {
     this.tasks = this.tasks.filter((task) => task.description !== description);
   }
 }
+function setPriorityColor(priority) {
+  switch (priority.toLowerCase()) {
+    case 'low':
+      return 'green';
+      case 'medium':
+        return 'orange';
+        case 'high':
+          return 'red';
+          default:
+            return 'black';
+  }
+}
+
+
+
